@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Approaching | Premium Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #1a1c2c 0%, #4a192c 50%, #121420 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #818cf8, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .custom-input {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: 0.3s;
+        }
+
+        .custom-input:focus {
+            outline: none;
+            border-color: #818cf8;
+            box-shadow: 0 0 15px rgba(129, 140, 248, 0.3);
+        }
+
+        /* Animasi muncul form */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-form { animation: slideUp 0.5s ease forwards; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: rgba(129, 140, 248, 0.5); border-radius: 10px; }
+    </style>
+</head>
+<body class="p-4 md:p-10">
+
+   <header class="max-w-7xl mx-auto mb-12 flex flex-col md:flex-row justify-between items-center gap-6">
+    <div>
+        <h1 class="text-4xl font-bold tracking-tight">Smart <span class="gradient-text">Approaching</span></h1>
+        <p class="text-slate-400 mt-2">Manage your leads with professional precision.</p>
+    </div>
+    
+    <div class="flex gap-4 w-full md:w-auto">
+        <div class="glass-card px-6 py-3 flex items-center gap-4 border-green-500/30">
+            <div class="text-green-400 bg-green-500/10 w-10 h-10 rounded-full flex items-center justify-center">
+                <i class="fab fa-whatsapp"></i>
+            </div>
+            <div>
+                <p class="text-[10px] uppercase tracking-widest text-slate-400">WA Approaches</p>
+                <h4 id="countWA" class="text-xl font-bold text-white">0</h4>
+            </div>
+        </div>
+        
+        <div class="glass-card px-6 py-3 flex items-center gap-4 border-indigo-500/30">
+            <div class="text-indigo-400 bg-indigo-500/10 w-10 h-10 rounded-full flex items-center justify-center">
+                <i class="fa fa-envelope"></i>
+            </div>
+            <div>
+                <p class="text-[10px] uppercase tracking-widest text-slate-400">Gmail Approaches</p>
+                <h4 id="countEmail" class="text-xl font-bold text-white">0</h4>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <main class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div class="glass-card p-8 group cursor-pointer" onclick="openModal('wa')">
+                <div class="w-16 h-16 bg-green-500/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fab fa-whatsapp text-3xl text-green-400"></i>
+                </div>
+                <h3 class="text-2xl font-semibold mb-2">Approach by WhatsApp</h3>
+                <p class="text-slate-400">Directly connect with your clients via WhatsApp Web automation.</p>
+                <div class="mt-6 flex items-center text-green-400 font-medium">
+                    Start Campaign <i class="fa fa-arrow-right ml-2"></i>
+                </div>
+            </div>
+
+            <div class="glass-card p-8 group cursor-pointer" onclick="openModal('email')">
+                <div class="w-16 h-16 bg-indigo-500/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa fa-envelope text-3xl text-indigo-400"></i>
+                </div>
+                <h3 class="text-2xl font-semibold mb-2">Approach by Email</h3>
+                <p class="text-slate-400">Send personalized Gmail drafts to multiple leads simultaneously.</p>
+                <div class="mt-6 flex items-center text-indigo-400 font-medium">
+                    Start Campaign <i class="fa fa-arrow-right ml-2"></i>
+                </div>
+            </div>
+        </div>
+
+        <section id="formSection" class="hidden animate-form">
+            <div class="glass-card p-8 mb-10">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                    <h2 id="formTitle" class="text-2xl font-bold uppercase tracking-widest text-indigo-300">Form Configuration</h2>
+                    <div class="flex items-center gap-3">
+                        <label class="text-sm">Number of Leads:</label>
+                        <input type="number" id="leadCount" value="1" min="1" max="100" class="custom-input w-20 px-3 py-2 rounded-xl text-center">
+                        <button onclick="generateRows()" class="bg-indigo-600 hover:bg-indigo-500 px-6 py-2 rounded-xl font-semibold transition">Generate</button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-separate border-spacing-y-3">
+                        <thead>
+                            <tr class="text-slate-400 uppercase text-xs tracking-wider">
+                                <th class="px-4 pb-2">#</th>
+                                <th class="px-4 pb-2" id="colHeader1">Target Info</th>
+                                <th class="px-4 pb-2" id="colHeader2">Subject / Headline</th>
+                                <th class="px-4 pb-2">Content Message</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leadsTableBody">
+                            </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-10 flex justify-end gap-4">
+                    <button onclick="hideForm()" class="px-8 py-3 rounded-2xl border border-white/10 hover:bg-white/5 transition">Cancel</button>
+                    <button id="submitBtn" onclick="processDeployment()" class="px-10 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 font-bold shadow-lg shadow-indigo-500/20 hover:scale-105 transition">Deploy Campaign</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let currentMode = ''; // 'wa' or 'email'
+
+        function openModal(mode) {
+            currentMode = mode;
+            document.getElementById('formSection').classList.remove('hidden');
+            document.getElementById('formTitle').innerText = mode === 'wa' ? 'WhatsApp Campaign' : 'Email Campaign';
+            document.getElementById('colHeader1').innerText = mode === 'wa' ? 'WA Number (62...)' : 'Recipient Email';
+            document.getElementById('colHeader2').innerText = mode === 'wa' ? 'Internal Note' : 'Email Subject';
+            
+            // Scroll to form
+            window.scrollTo({ top: document.getElementById('formSection').offsetTop - 50, behavior: 'smooth' });
+            generateRows();
+        }
+
+        function hideForm() {
+            document.getElementById('formSection').classList.add('hidden');
+        }
+
+        function generateRows() {
+            const count = document.getElementById('leadCount').value;
+            const body = document.getElementById('leadsTableBody');
+            body.innerHTML = '';
+
+            for (let i = 1; i <= count; i++) {
+                body.innerHTML += `
+                    <tr class="animate-form" style="animation-delay: ${i * 0.05}s">
+                        <td class="px-4 py-4 bg-white/5 rounded-l-2xl text-slate-500 font-bold">${i}</td>
+                        <td class="px-4 py-4 bg-white/5">
+                            <input type="text" class="custom-input w-full p-2 rounded-lg target-val" placeholder="${currentMode === 'wa' ? '628xxx' : 'name@mail.com'}">
+                        </td>
+                        <td class="px-4 py-4 bg-white/5">
+                            <input type="text" class="custom-input w-full p-2 rounded-lg subject-val" placeholder="Identify this lead">
+                        </td>
+                        <td class="px-4 py-4 bg-white/5 rounded-r-2xl">
+                            <textarea class="custom-input w-full p-2 rounded-lg text-sm content-val" rows="1" placeholder="Write message here..."></textarea>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+       
+    updateStatsDisplay();
+
+
+// Fungsi untuk memperbarui tampilan angka dari LocalStorage
+function updateStatsDisplay() {
+    const totalWA = localStorage.getItem('totalWA') || 0;
+    const totalEmail = localStorage.getItem('totalEmail') || 0;
+    
+    document.getElementById('countWA').innerText = totalWA;
+    document.getElementById('countEmail').innerText = totalEmail;
+}
+
+       async function processDeployment() {
+    const targets = document.querySelectorAll('.target-val');
+    const subjects = document.querySelectorAll('.subject-val');
+    const contents = document.querySelectorAll('.content-val');
+    
+    // 1. TAMBAHKAN INI: Deklarasi variabel sukses di awal
+    let successCount = 0;
+
+    // Validasi sederhana
+    if (targets.length === 0 || !targets[0].value) {
+        alert("Mohon isi setidaknya satu data leads.");
+        return;
+    }
+
+    alert(`Memulai proses... Browser akan membuka ${targets.length} tab secara bertahap.`);
+
+    for (let i = 0; i < targets.length; i++) {
+        const target = targets[i].value.trim();
+        const subjectRaw = subjects[i].value;
+        const msgRaw = contents[i].value;
+
+        if (!target) continue;
+
+        // Membersihkan nomor WA & Encoding
+        const cleanPhone = target.replace(/\D/g, '');
+        const subjectEncoded = encodeURIComponent(subjectRaw);
+        const msgEncoded = encodeURIComponent(msgRaw);
+
+        let url = '';
+        if (currentMode === 'wa') {
+            url = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${msgEncoded}`;
+        } else {
+            url = `https://mail.google.com/mail/?view=cm&fs=1&to=${target}&su=${subjectEncoded}&body=${msgEncoded}`;
+        }
+
+        // Eksekusi buka tab (Hanya satu kali)
+        const win = window.open(url, '_blank');
+        
+        // Cek apakah pop-up diblokir browser
+        if (!win || win.closed || typeof win.closed == 'undefined') {
+            alert("Pop-up diblokir! Klik 'Izinkan Pop-up' di baris alamat browser Anda.");
+            break; 
+        }
+
+        successCount++; // Sekarang variabel ini sudah dikenal
+
+        // Jeda agar browser tidak memblokir karena dianggap spam
+        await new Promise(resolve => setTimeout(resolve, 600));
+    }
+
+    // Update LocalStorage jika ada yang berhasil dibuka
+    if (successCount > 0) {
+        if (currentMode === 'wa') {
+            let currentWA = parseInt(localStorage.getItem('totalWA') || 0);
+            localStorage.setItem('totalWA', currentWA + successCount);
+        } else {
+            let currentEmail = parseInt(localStorage.getItem('totalEmail') || 0);
+            localStorage.setItem('totalEmail', currentEmail + successCount);
+        }
+        
+        // Pastikan fungsi ini ada untuk memperbarui angka di Dashboard atas
+        if (typeof updateStatsDisplay === "function") {
+            updateStatsDisplay();
+        }
+        
+        alert(`Selesai! ${successCount} tab berhasil dibuka.`);
+    }
+}
+    
+    </script>
+</body>
+</html>
